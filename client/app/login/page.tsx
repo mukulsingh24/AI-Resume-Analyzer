@@ -1,18 +1,21 @@
 import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
-
+import Image from "next/image";
 export default function Login() {
   return (
     <div className="flex min-h-screen bg-gray-100">
       <div className="w-1/2 flex items-center justify-center">
-        <img
-          src="/assets/loginpage.png"
-          alt="LoginPage"
-          className="w-[80%] max-w-[700px] object-contain"
-        />
+        
+<Image
+    src="/assets/loginpage.png"
+    alt="Login"
+    width={700}
+    height={700}
+    className="w-[80%] h-auto"
+/>
       </div>
       <div className="w-1/2 flex items-center justify-center">
-        <div className="w-full max-w-[500px] bg-white rounded-xl shadow-sm p-10">
+        <div className="w-full max-w-125 bg-white rounded-xl shadow-sm p-10">
           <h1 className="text-4xl font-bold leading-tight mb-8 text-black">
             Welcome to <br />
             <span className="text-blue-500">
@@ -51,7 +54,7 @@ export default function Login() {
               Remember me
             </label>
             <Link
-              href="/forgot-password"
+              href="/forgot"
               className="text-blue-500 text-sm hover:underline"
             >
               Forgot Password?
