@@ -36,7 +36,7 @@ export default function Register() {
         email,
         password,
       });
-      alert("Frontend validation successful!");
+      alert("Registration Successfull");
     } catch (err) {
       setError("Something went wrong.");
     } finally {
@@ -84,7 +84,6 @@ export default function Register() {
             onChange={(e) => setEmail(e.target.value)}
             className="w-full border border-gray-300 rounded-lg px-4 py-4 mb-4 outline-none focus:ring-2 focus:ring-blue-400 text-black"
           />
-          {/* Password */}
           <div className="relative mb-2">
             <input
               type={showPassword ? "text" : "password"}
@@ -93,7 +92,6 @@ export default function Register() {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full border border-gray-300 rounded-lg py-4 pl-4 pr-14 outline-none focus:ring-2 focus:ring-blue-400 text-black"
             />
-
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
@@ -102,7 +100,6 @@ export default function Register() {
               {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
             </button>
           </div>
-
           {password && (
             <p
               className={`text-sm mb-4 ${
@@ -114,8 +111,6 @@ export default function Register() {
                 : "Password must contain at least 8 characters."}
             </p>
           )}
-
-          {/* Confirm Password */}
           <div className="relative mb-2">
             <input
               type={showConfirmPassword ? "text" : "password"}
@@ -124,7 +119,6 @@ export default function Register() {
               onChange={(e) => setConfirmPassword(e.target.value)}
               className="w-full border border-gray-300 rounded-lg py-4 pl-4 pr-14 outline-none focus:ring-2 focus:ring-blue-400 text-black"
             />
-
             <button
               type="button"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
@@ -137,7 +131,6 @@ export default function Register() {
               )}
             </button>
           </div>
-
           {confirmPassword && (
             <p
               className={`text-sm mb-4 ${
@@ -145,15 +138,11 @@ export default function Register() {
               }`}
             >
               {passwordsMatch
-                ? "✓ Passwords match."
+                ? "Passwords match."
                 : "Passwords do not match."}
             </p>
           )}
-
-          {/* Error */}
           {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
-
-          {/* Register Button */}
           <button
             onClick={handleRegister}
             disabled={loading}

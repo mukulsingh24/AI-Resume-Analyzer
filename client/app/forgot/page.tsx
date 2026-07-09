@@ -40,7 +40,7 @@ export default function ForgotPassword() {
               href="/login"
               className="text-blue-500 font-medium hover:underline"
             >
-              ← Back to Login
+              Back to Login
             </Link>
           </div>
         </div>
