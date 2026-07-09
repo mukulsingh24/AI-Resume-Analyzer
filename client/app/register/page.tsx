@@ -1,9 +1,10 @@
 "use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import PasswordInput from "@/components/passwordInput";
 export default function Register() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -37,7 +38,7 @@ export default function Register() {
         password,
       });
       alert("Registration Successfull");
-    } catch (err:unknown) {
+    } catch (err: unknown) {
       console.log(err);
       setError("Something went wrong.");
     } finally {
@@ -85,22 +86,14 @@ export default function Register() {
             onChange={(e) => setEmail(e.target.value)}
             className="w-full border border-gray-300 rounded-lg px-4 py-4 mb-4 outline-none focus:ring-2 focus:ring-blue-400 text-black"
           />
-          <div className="relative mb-2">
-            <input
-              type={showPassword ? "text" : "password"}
-              placeholder="Enter Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg py-4 pl-4 pr-14 outline-none focus:ring-2 focus:ring-blue-400 text-black"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute inset-y-0 right-4 flex items-center text-gray-500 hover:text-gray-700"
-            >
-              {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
-            </button>
-          </div>
+          <PasswordInput
+            placeholder="Enter Password"
+            value={password}
+            onChange={setPassword}
+            showPassword={showPassword}
+            setShowPassword={setShowPassword}
+          />
+
           {password && (
             <p
               className={`text-sm mb-4 ${
@@ -108,39 +101,24 @@ export default function Register() {
               }`}
             >
               {passwordLength
-                ? "✓ Password length is valid."
+                ? "Password length is valid."
                 : "Password must contain at least 8 characters."}
             </p>
           )}
-          <div className="relative mb-2">
-            <input
-              type={showConfirmPassword ? "text" : "password"}
-              placeholder="Confirm Password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg py-4 pl-4 pr-14 outline-none focus:ring-2 focus:ring-blue-400 text-black"
-            />
-            <button
-              type="button"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="absolute inset-y-0 right-4 flex items-center text-gray-500 hover:text-gray-700"
-            >
-              {showConfirmPassword ? (
-                <FaEyeSlash size={18} />
-              ) : (
-                <FaEye size={18} />
-              )}
-            </button>
-          </div>
+          <PasswordInput
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChange={setConfirmPassword}
+            showPassword={showConfirmPassword}
+            setShowPassword={setShowConfirmPassword}
+          />
           {confirmPassword && (
             <p
               className={`text-sm mb-4 ${
                 passwordsMatch ? "text-green-600" : "text-red-500"
               }`}
             >
-              {passwordsMatch
-                ? "Passwords match."
-                : "Passwords do not match."}
+              {passwordsMatch ? "Passwords match." : "Passwords do not match."}
             </p>
           )}
           {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
