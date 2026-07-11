@@ -1,20 +1,24 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
   subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
+  variable: "--font-display",
+  weight: ["500", "600", "700", "800"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
   title: "Apna Interview",
-  description: "AI-RESUME-ANALYZER",
+  description:
+    "Analyze your resume, improve your ATS score, close skill gaps, and practice real interview questions — all powered by AI.",
 };
 
 export default function RootLayout({
@@ -23,11 +27,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="en">
+      <body
+        className={`${inter.variable} ${jakarta.variable} font-sans antialiased bg-white text-slate-900`}
+      >
+        {children}
+      </body>
     </html>
   );
 }
