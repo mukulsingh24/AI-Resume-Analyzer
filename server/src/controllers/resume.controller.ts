@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import pdf from "pdf-parse";
-
+import { AnalyzeResume } from "../services/gemini.service";
 export const uploadResume = async (
   req: Request,
   res: Response
@@ -12,23 +12,17 @@ export const uploadResume = async (
         message: "No resume uploaded.",
       });
     }
-
     const data = await pdf(req.file.buffer);
-
+    const analysis = await AnalyzeResume(data.text);
     return res.status(200).json({
       success: true,
-      filename: req.file.originalname,
-      mimetype: req.file.mimetype,
-      size: req.file.size,
-      text: data.text,
+      analysis: analysis,
     });
-
   } catch (err) {
-    console.error(err);
-
+    console.error("ERROR:", err);
     return res.status(500).json({
       success: false,
-      message: "Failed to parse resume.",
+      error: err instanceof Error ? err.message : "Unknown error",
     });
   }
 };
