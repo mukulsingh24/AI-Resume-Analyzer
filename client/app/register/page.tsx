@@ -3,7 +3,6 @@ import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "../firebase/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import Link from "next/link";
-import Image from "next/image";
 import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import PasswordInput from "@/components/passwordInput";
@@ -62,103 +61,227 @@ export default function Register() {
     }
   };
   return (
-    <div className="flex min-h-screen bg-gray-100">
-      <div className="w-1/2 flex items-center justify-center">
-        <Image
-          src="/assets/loginpage.png"
-          alt="Register"
-          width={700}
-          height={700}
-          className="w-[80%] h-auto"
-          priority
-        />
-      </div>
-      <div className="w-1/2 flex items-center justify-center">
-        <div className="w-full max-w-125 bg-white rounded-xl shadow-sm p-10">
-          <h1 className="text-4xl font-bold leading-tight mb-8 text-black">
-            Welcome to <br />
-            <span className="text-blue-500">Apna Interview</span>
-          </h1>
+  <main className="min-h-screen bg-[#f8f9fc]">
+    <div className="grid min-h-screen lg:grid-cols-2">
+      <section className="relative hidden overflow-hidden border-r border-slate-200 bg-white lg:flex lg:flex-col">
+        <Link
+          href="/"
+          className="absolute left-10 top-8 z-20 flex items-center gap-3"
+        >
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-violet-600 font-bold text-white shadow-sm">
+            A
+          </div>
+
+          <span className="text-lg font-semibold text-slate-900">
+            Apna Interview
+          </span>
+        </Link>
+
+        <div className="absolute -left-32 top-1/3 h-96 w-96 rounded-full bg-blue-100/60 blur-[100px]" />
+        <div className="absolute -right-32 bottom-10 h-96 w-96 rounded-full bg-violet-100/60 blur-[100px]" />
+
+        <div className="relative z-10 flex flex-1 items-center px-12 xl:px-20">
+          <div className="w-full">
+            <h1 className="mt-7 max-w-xl text-5xl font-bold leading-[1.1] tracking-tight text-slate-900 xl:text-6xl">
+              Your career journey
+              <span className="block bg-gradient-to-r from-blue-600 to-violet-600 bg-clip-text text-transparent">
+                starts here.
+              </span>
+            </h1>
+
+            <p className="mt-6 max-w-xl text-lg leading-8 text-slate-600">
+              Analyze your resume, discover your strengths, close skill gaps,
+              and prepare for the interviews that can shape your career.
+            </p>
+
+            <div className="mt-12 grid gap-4">
+              <div className="flex items-center gap-5 rounded-xl border border-slate-200 bg-[#f8f9fc] p-5">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-indigo-50 font-semibold text-indigo-600">
+                  01
+                </div>
+
+                <div>
+                  <h3 className="font-semibold text-slate-900">
+                    Analyze your resume
+                  </h3>
+                  <p className="mt-1 text-sm leading-6 text-slate-500">
+                    Get your ATS score and understand how your resume performs.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-5 rounded-xl border border-slate-200 bg-[#f8f9fc] p-5">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-indigo-50 font-semibold text-indigo-600">
+                  02
+                </div>
+
+                <div>
+                  <h3 className="font-semibold text-slate-900">
+                    Discover skill gaps
+                  </h3>
+                  <p className="mt-1 text-sm leading-6 text-slate-500">
+                    Identify missing skills and get personalized recommendations.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-5 rounded-xl border border-slate-200 bg-[#f8f9fc] p-5">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-indigo-50 font-semibold text-indigo-600">
+                  03
+                </div>
+
+                <div>
+                  <h3 className="font-semibold text-slate-900">
+                    Prepare for interviews
+                  </h3>
+                  <p className="mt-1 text-sm leading-6 text-slate-500">
+                    Practice relevant interview questions and build confidence.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-10 flex items-center gap-2 text-sm text-slate-500">
+              One platform for your complete interview preparation journey
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="relative flex min-h-screen items-center justify-center px-6 py-20 sm:px-10 lg:px-14 xl:px-20">
+        <Link
+          href="/"
+          className="absolute left-6 top-6 flex items-center gap-3 lg:hidden"
+        >
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-violet-600 font-bold text-white">
+            A
+          </div>
+
+          <span className="font-semibold text-slate-900">
+            Apna Interview
+          </span>
+        </Link>
+
+        <div className="w-full max-w-[520px]">
+          <div className="mb-8">
+            <h2 className="text-4xl font-bold tracking-tight text-slate-900">
+              Create your account
+            </h2>
+
+            <p className="mt-3 text-slate-500">
+              Join Apna Interview and start preparing for your next opportunity.
+            </p>
+          </div>
+
           <button
             onClick={handleGoogleSignup}
-            className="cursor-pointer w-full flex items-center justify-center gap-3 border rounded-lg px-6 py-4 bg-white shadow-sm hover:bg-gray-100 transition"
+            className="flex w-full cursor-pointer items-center justify-center gap-3 rounded-lg border border-slate-300 bg-white px-5 py-3.5 font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
           >
-            <FcGoogle size={24} />
-            <span className="text-black font-medium">Signup with Google</span>
+            <FcGoogle size={22} />
+            Continue with Google
           </button>
-          <div className="flex items-center gap-4 my-8">
-            <div className="flex-1 h-px bg-gray-300"></div>
-            <span className="text-gray-500 text-sm">OR</span>
-            <div className="flex-1 h-px bg-gray-300"></div>
-          </div>
-          <input
-            type="text"
-            placeholder="Enter Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-4 py-4 mb-4 outline-none focus:ring-2 focus:ring-blue-400 text-black"
-          />
-          <input
-            type="email"
-            placeholder="Enter Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-4 py-4 mb-4 outline-none focus:ring-2 focus:ring-blue-400 text-black"
-          />
-          <PasswordInput
-            placeholder="Enter Password"
-            value={password}
-            onChange={setPassword}
-            showPassword={showPassword}
-            setShowPassword={setShowPassword}
-          />
 
-          {password && (
-            <p
-              className={`text-sm mb-4 ${
-                passwordLength ? "text-green-600" : "text-red-500"
-              }`}
-            >
-              {passwordLength
-                ? "Password length is valid."
-                : "Password must contain at least 8 characters."}
-            </p>
+          <div className="my-6 flex items-center gap-4">
+            <div className="h-px flex-1 bg-slate-200" />
+
+            <span className="text-xs font-medium text-slate-400">
+              OR CONTINUE WITH EMAIL
+            </span>
+
+            <div className="h-px flex-1 bg-slate-200" />
+          </div>
+
+          <div className="space-y-4">
+            <input
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3.5 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+            />
+
+            <input
+              type="email"
+              placeholder="Email address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3.5 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+            />
+
+            <PasswordInput
+              placeholder="Password"
+              value={password}
+              onChange={setPassword}
+              showPassword={showPassword}
+              setShowPassword={setShowPassword}
+            />
+
+            {password && (
+              <p
+                className={`text-xs ${
+                  passwordLength ? "text-emerald-600" : "text-red-500"
+                }`}
+              >
+                {passwordLength
+                  ? "✓ Password meets the minimum requirement."
+                  : "Password must contain at least 8 characters."}
+              </p>
+            )}
+
+            <PasswordInput
+              placeholder="Confirm password"
+              value={confirmPassword}
+              onChange={setConfirmPassword}
+              showPassword={showConfirmPassword}
+              setShowPassword={setShowConfirmPassword}
+            />
+
+            {confirmPassword && (
+              <p
+                className={`text-xs ${
+                  passwordsMatch ? "text-emerald-600" : "text-red-500"
+                }`}
+              >
+                {passwordsMatch
+                  ? "✓ Passwords match."
+                  : "Passwords do not match."}
+              </p>
+            )}
+          </div>
+
+          {error && (
+            <div className="mt-4 rounded-lg border border-red-100 bg-red-50 px-4 py-3">
+              <p className="text-sm text-red-600">{error}</p>
+            </div>
           )}
-          <PasswordInput
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            onChange={setConfirmPassword}
-            showPassword={showConfirmPassword}
-            setShowPassword={setShowConfirmPassword}
-          />
-          {confirmPassword && (
-            <p
-              className={`text-sm mb-4 ${
-                passwordsMatch ? "text-green-600" : "text-red-500"
-              }`}
-            >
-              {passwordsMatch ? "Passwords match." : "Passwords do not match."}
-            </p>
-          )}
-          {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+
           <button
             onClick={handleRegister}
             disabled={loading}
-            className="cursor-pointer w-full bg-blue-500 hover:bg-blue-600 text-white py-4 rounded-lg font-semibold transition disabled:bg-blue-300"
+            className="mt-6 flex w-full cursor-pointer items-center justify-center rounded-lg bg-slate-900 py-3.5 font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-300"
           >
-            {loading ? "Creating Account..." : "Register"}
+            {loading ? (
+              <span className="flex items-center gap-3">
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                Creating account...
+              </span>
+            ) : (
+              "Create Account"
+            )}
           </button>
-          <p className="text-center text-sm text-gray-600 mt-8">
+
+          <p className="mt-7 text-center text-sm text-slate-500">
             Already have an account?{" "}
             <Link
               href="/login"
-              className="text-blue-500 font-medium hover:underline"
+              className="font-semibold text-indigo-600 hover:text-indigo-700"
             >
-              Login here
+              Log in
             </Link>
           </p>
         </div>
-      </div>
+      </section>
     </div>
-  );
+  </main>
+);
 }
