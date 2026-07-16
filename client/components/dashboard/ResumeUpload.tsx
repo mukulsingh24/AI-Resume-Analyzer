@@ -3,11 +3,15 @@
 import { useRef, useState } from "react";
 import { Analysis } from "@/types/analysis";
 
-export default function ResumeUpload() {
-  const [file, setFile] = useState<File | null>(null);
-  const [analysis, setAnalysis] = useState<Analysis | null>(null);
-  const [loading, setLoading] = useState(false);
+interface ResumeUploadProps {
+  onAnalysisComplete: (analysis: Analysis) => void;
+}
 
+export default function ResumeUpload({
+  onAnalysisComplete,
+}: ResumeUploadProps) {
+  const [file, setFile] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleAnalyze = async () => {
@@ -30,15 +34,12 @@ export default function ResumeUpload() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || data.message || "Something went wrong");
+        throw new Error(data.error || "Failed to analyze resume");
       }
 
-      console.log(data);
-
-      setAnalysis(data.analysis);
+      onAnalysisComplete(data.analysis);
     } catch (error) {
       console.error(error);
-      alert(error instanceof Error ? error.message : "Upload failed");
     } finally {
       setLoading(false);
     }
@@ -58,8 +59,6 @@ export default function ResumeUpload() {
 
     setFile(selectedFile);
   };
-
-  console.log(analysis);
 
   return (
     <div className="bg-white rounded-xl shadow p-8">
@@ -93,7 +92,7 @@ export default function ResumeUpload() {
       <button
         onClick={handleAnalyze}
         disabled={!file || loading}
-        className="mt-6 w-full bg-slate-900 text-white py-3 rounded-lg"
+        className="mt-6 w-full bg-slate-900 text-white py-3 rounded-lg disabled:opacity-50"
       >
         {loading ? "Analyzing Resume" : "Analyze Resume"}
       </button>

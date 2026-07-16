@@ -6,7 +6,7 @@ export const AnalyzeResume = async (resumeText: string) => {
     apiKey: process.env.GEMINI_API_KEY!,
   });
   const response = await ai.models.generateContent({
-    model: "gemini-3.5-flash-lite",
+    model: "gemini-3.1-flash-lite",
     contents: `
 You are an ATS Resume Analyzer.
 
