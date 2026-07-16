@@ -84,7 +84,7 @@ export default function Dashboard() {
             <div className="grid lg:grid-cols-[320px_1fr] gap-6">
               <div className="bg-white border border-slate-200 rounded-xl p-7 shadow-sm flex flex-col items-center justify-center">
                 <p className="text-sm font-medium text-slate-500 mb-5">
-                  ATS SCORE
+                  RESUME SCORE
                 </p>
 
                 <div
@@ -99,7 +99,7 @@ export default function Dashboard() {
                     </span>
 
                     <span className="text-xs text-slate-500 mt-1">
-                      ATS Score
+                      RESUME Score
                     </span>
                   </div>
                 </div>

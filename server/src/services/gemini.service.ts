@@ -8,13 +8,16 @@ export const AnalyzeResume = async (resumeText: string) => {
   const response = await ai.models.generateContent({
     model: "gemini-3.1-flash-lite",
     contents: `
-You are an ATS Resume Analyzer.
+You are an expert Resume Analyzer.
 
-Return ONLY valid JSON.
+Analyze the resume independently without comparing it to a specific
+job description.
 
-Do not wrap JSON inside markdown.
+Evaluate the resume based on overall quality, structure, clarity,
+technical skills, project quality, impact, and general ATS readability.
 
-Do not explain anything.
+The score represents the overall resume quality and ATS readiness,
+not a job-specific ATS match score.
 
 JSON Schema:
 
