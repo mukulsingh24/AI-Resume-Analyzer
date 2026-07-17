@@ -19,17 +19,42 @@ export default function Profile() {
   const router = useRouter();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      if (!currentUser) {
-        router.replace("/login");
-      } else {
-        setUser(currentUser);
-        setCheckingAuth(false);
-      }
-    });
+  const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+    if (!currentUser) {
+      router.replace("/login");
+      return;
+    }
 
-    return () => unsubscribe();
-  }, [router]);
+    setUser(currentUser);
+
+    try {
+      const response = await fetch(
+        `http://localhost:5050/api/profile/${currentUser.uid}`
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+
+        setFullName(data.profile.fullName || "");
+        setTargetRole(data.profile.targetRole || "");
+        setExperienceLevel(data.profile.experienceLevel || "");
+        setEducation(data.profile.education || "");
+
+        setSkills(
+          Array.isArray(data.profile.skills)
+            ? data.profile.skills.join(", ")
+            : ""
+        );
+      }
+    } catch (error) {
+      console.error("Failed to load profile:", error);
+    } finally {
+      setCheckingAuth(false);
+    }
+  });
+
+  return () => unsubscribe();
+}, [router]);
 
   if (checkingAuth) {
     return (

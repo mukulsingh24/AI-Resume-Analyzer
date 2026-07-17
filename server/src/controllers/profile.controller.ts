@@ -56,3 +56,34 @@ export const saveProfile = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const getProfile = async (req: Request, res: Response) => {
+  try {
+    const { firebaseUid } = req.params;
+
+    const profile = await prisma.profile.findUnique({
+      where: {
+        firebaseUid,
+      },
+    });
+
+    if (!profile) {
+      return res.status(404).json({
+        success: false,
+        message: "Profile not found.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      profile,
+    });
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch profile.",
+    });
+  }
+};
