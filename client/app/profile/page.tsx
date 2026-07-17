@@ -262,17 +262,32 @@ export default function Profile() {
             </p>
           </div>
 
-          <div className="mt-7 flex justify-end">
+          <div className="mt-7">
             {message && (
-              <p className="mt-5 text-sm text-slate-600">{message}</p>
+              <div
+                className={`mb-4 flex items-center gap-2 rounded-lg border px-4 py-3 text-sm ${
+                  message.includes("successfully")
+                    ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                    : "border-red-200 bg-red-50 text-red-700"
+                }`}
+              >
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white font-semibold">
+                  {message.includes("successfully") ? "✓" : "!"}
+                </span>
+
+                {message}
+              </div>
             )}
-            <button
-              onClick={handleSaveProfile}
-              disabled={saving}
-              className="rounded-lg bg-slate-900 px-6 py-3 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
-            >
-              {saving ? "Saving..." : "Save Profile"}
-            </button>
+
+            <div className="flex justify-end">
+              <button
+                onClick={handleSaveProfile}
+                disabled={saving}
+                className="cursor-pointer rounded-lg bg-slate-900 px-6 py-3 text-sm font-medium text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {saving ? "Saving..." : "Save Profile"}
+              </button>
+            </div>
           </div>
         </div>
       </div>
