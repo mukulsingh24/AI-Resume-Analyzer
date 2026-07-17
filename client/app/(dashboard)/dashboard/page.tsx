@@ -11,6 +11,7 @@ export default function Dashboard() {
   const [user, setUser] = useState<User | null>(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [latestAnalysis, setLatestAnalysis] = useState<Analysis | null>(null);
+  const [resumeHistory, setResumeHistory] = useState<Analysis[]>([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -23,22 +24,27 @@ export default function Dashboard() {
       setUser(currentUser);
 
       try {
+        const token = await currentUser.getIdToken();
         const response = await fetch(
-          `http://localhost:5050/api/resume-analysis-history/${currentUser.uid}/latest`,
+          "http://localhost:5050/api/resume/history",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
         );
-
         const data = await response.json();
-
-        if (response.ok && data.analysis) {
-          setLatestAnalysis(data.analysis);
+        if (response.ok && data.history?.length > 0) {
+          setLatestAnalysis(data.history[0]);
+          setResumeHistory(data.history);
         }
       } catch (error) {
-        console.error("Failed to fetch latest resume analysis:", error);
+        console.error("Failed to fetch resume analysis history:", error);
       } finally {
         setCheckingAuth(false);
       }
     });
-
     return () => unsubscribe();
   }, [router]);
 
@@ -73,17 +79,6 @@ export default function Dashboard() {
               opportunities, and prepare for your next interview.
             </p>
           </div>
-
-          <Link
-            href="/profile"
-            className="inline-flex w-fit items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm transition hover:border-indigo-200 hover:shadow-md"
-          >
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-50 font-semibold text-indigo-600">
-              {userName.charAt(0).toUpperCase()}
-            </div>
-
-            <span className="ml-3 text-slate-400">→</span>
-          </Link>
         </section>
 
         <section className="mt-10 grid gap-5 md:grid-cols-3">
@@ -275,30 +270,80 @@ export default function Dashboard() {
                 </p>
               </div>
 
-              <button className="text-sm font-medium text-indigo-600 transition hover:text-indigo-700">
-                View all activity →
-              </button>
+              {resumeHistory.length > 0 && (
+                <button className="text-sm font-medium text-indigo-600 transition hover:text-indigo-700 cursor-pointer">
+                  View all activity →
+                </button>
+              )}
             </div>
 
-            <div className="flex min-h-64 flex-col items-center justify-center text-center">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-50 text-xl">
-                📊
+            {resumeHistory.length > 0 ? (
+              <div className="mt-6 divide-y divide-slate-100">
+                {resumeHistory.slice(0, 5).map((analysis) => (
+                  <div
+                    key={analysis.id}
+                    className="flex items-center justify-between py-5 first:pt-0 last:pb-0"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-lg">
+                        📄
+                      </div>
+
+                      <div>
+                        <p className="font-medium text-slate-900">
+                          Resume analyzed
+                        </p>
+
+                        <p className="mt-1 text-sm text-slate-500">
+                          {analysis.fileName || "Resume"}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="text-right">
+                      <span className="inline-flex rounded-full bg-emerald-50 px-3 py-1 text-sm font-medium text-emerald-700">
+                        Score {analysis.atsScore}/100
+                      </span>
+
+                      {analysis.createdAt && (
+                        <p className="mt-2 text-xs text-slate-400">
+                          {new Date(analysis.createdAt).toLocaleDateString(
+                            "en-IN",
+                            {
+                              day: "numeric",
+                              month: "short",
+                              year: "numeric",
+                            },
+                          )}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                ))}
               </div>
+            ) : (
+              <div className="flex min-h-64 flex-col items-center justify-center text-center">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-50 text-xl">
+                  📊
+                </div>
 
-              <p className="mt-4 font-medium text-slate-800">No activity yet</p>
+                <p className="mt-4 font-medium text-slate-800">
+                  No activity yet
+                </p>
 
-              <p className="mt-2 max-w-md text-sm leading-6 text-slate-500">
-                Your resume analyses, job matches, and interview practice
-                sessions will appear here once you start using the platform.
-              </p>
+                <p className="mt-2 max-w-md text-sm leading-6 text-slate-500">
+                  Your resume analyses, job matches, and interview practice
+                  sessions will appear here once you start using the platform.
+                </p>
 
-              <Link
-                href="/resume-analysis"
-                className="mt-5 rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800"
-              >
-                Analyze your first resume
-              </Link>
-            </div>
+                <Link
+                  href="/resume-analysis"
+                  className="mt-5 rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-slate-800"
+                >
+                  Analyze your first resume
+                </Link>
+              </div>
+            )}
           </div>
         </section>
       </div>

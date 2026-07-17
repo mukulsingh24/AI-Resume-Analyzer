@@ -17,67 +17,48 @@ export default function ResumeUpload({
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleAnalyze = async () => {
-    if (!file) return;
+  if (!file) return;
 
-    try {
-      setLoading(true);
+  try {
+    setLoading(true);
 
-      const formData = new FormData();
-      formData.append("resume", file);
+    const formData = new FormData();
+    formData.append("resume", file);
 
-      const response = await fetch("http://localhost:5050/api/resume/upload", {
-        method: "POST",
-        body: formData,
-      });
+    const user = auth.currentUser;
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to analyze resume");
-      }
-
-      const analysis = data.analysis;
-
-      onAnalysisComplete(analysis);
-      onResumeTextExtracted(data.resumeText);
-
-      const currentUser = auth.currentUser;
-
-      if (currentUser) {
-        const saveResponse = await fetch(
-          "http://localhost:5050/api/resume-analysis-history",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              firebaseUid: currentUser.uid,
-              fileName: file.name,
-              atsScore: analysis.atsScore,
-              summary: analysis.summary,
-              strengths: analysis.strengths,
-              weaknesses: analysis.weaknesses,
-              missingSections: analysis.missingSections,
-              suggestions: analysis.suggestions,
-            }),
-          },
-        );
-
-        const saveData = await saveResponse.json();
-
-        if (!saveResponse.ok) {
-          throw new Error(saveData.message || "Failed to save resume analysis");
-        }
-
-        console.log("Resume analysis saved:", saveData);
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
+    if (!user) {
+      console.error("User is not logged in.");
+      return;
     }
-  };
+
+    const token = await user.getIdToken();
+
+    const response = await fetch(
+      "http://localhost:5050/api/resume/upload",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Resume analysis failed.");
+    }
+    onAnalysisComplete(data.analysis);
+    onResumeTextExtracted(data.resumeText);
+
+  } catch (error) {
+    console.error(error);
+  } finally {
+    setLoading(false);
+  }
+};
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
 

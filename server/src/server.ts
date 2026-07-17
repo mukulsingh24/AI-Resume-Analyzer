@@ -14,6 +14,6 @@ app.get("/", (req, res) => {
 app.use("/api/resume", resumeRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/resume-analysis-history", resumeAnalysisRoutes);
-app.listen(5051, () => {
+app.listen(5050, () => {
   console.log("Server Started");
 });

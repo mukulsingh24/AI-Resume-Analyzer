@@ -17,7 +17,7 @@ export default function JobMatchPage() {
       <div className="mx-auto max-w-[1400px] px-6 py-10 lg:px-10">
         <div className="mb-8">
           <p className="text-sm font-medium text-indigo-600">
-            Job Match
+            ATS 
           </p>
 
           <h1 className="mt-1 text-3xl font-bold tracking-tight">
