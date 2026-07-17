@@ -5,7 +5,9 @@ import { auth } from "../firebase/firebase";
 import { useRouter } from "next/navigation";
 import ResumeUpload from "@/components/dashboard/ResumeUpload";
 import { Analysis } from "@/types/analysis";
+import { FaRegUserCircle } from "react-icons/fa";
 import JobMatch from "@/components/dashboard/JobMatch";
+import Link from "next/link";
 export default function Dashboard() {
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [resumeAnalysis, setResumeAnalysis] = useState<Analysis | null>(null);
@@ -55,13 +57,22 @@ export default function Dashboard() {
               </p>
             </div>
           </div>
+          <div className="flex items-center gap-5">
+  <Link
+    href="/profile"
+    className="flex items-center justify-center text-slate-600 hover:text-indigo-600 transition-colors"
+    title="Profile"
+  >
+    <FaRegUserCircle size={30} />
+  </Link>
 
-          <button
-            onClick={handleLogout}
-            className="px-5 py-2 rounded-lg border border-slate-200 bg-white text-sm font-medium text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition cursor-pointer"
-          >
-            Logout
-          </button>
+  <button
+    onClick={handleLogout}
+    className="px-5 py-2 rounded-lg border border-slate-200 bg-white text-sm font-medium text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition cursor-pointer"
+  >
+    Logout
+  </button>
+</div>
         </div>
       </header>
 
