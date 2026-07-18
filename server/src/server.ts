@@ -20,5 +20,5 @@ app.use("/api/resume-analysis-history", resumeAnalysisRoutes);
 app.use("/api/job-match", jobMatchRoutes);
 app.use("/api/interview", interviewRoutes);
 app.listen(PORT, () => {
-  console.log("Server Started");
+  console.log(`Server Started on port ${PORT}`);
 });
