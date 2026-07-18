@@ -6,12 +6,19 @@ import { onAuthStateChanged, User } from "firebase/auth";
 import { auth } from "../../firebase/firebase";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { JobMatchAnalysis } from "@/types/jobMatchAnalysis";
 
 export default function Dashboard() {
   const [user, setUser] = useState<User | null>(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [latestAnalysis, setLatestAnalysis] = useState<Analysis | null>(null);
   const [resumeHistory, setResumeHistory] = useState<Analysis[]>([]);
+  const [jobMatchHistory, setJobMatchHistory] = useState<JobMatchAnalysis[]>(
+    [],
+  );
+  const [latestJobMatch, setLatestJobMatch] = useState<JobMatchAnalysis | null>(
+    null,
+  );
   const router = useRouter();
 
   useEffect(() => {
@@ -25,26 +32,42 @@ export default function Dashboard() {
 
       try {
         const token = await currentUser.getIdToken();
-        const response = await fetch(
-          "http://localhost:5050/api/resume/history",
-          {
+
+        const [resumeResponse, jobMatchResponse] = await Promise.all([
+          fetch("http://localhost:5050/api/resume/history", {
             method: "GET",
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          },
-        );
-        const data = await response.json();
-        if (response.ok && data.history?.length > 0) {
-          setLatestAnalysis(data.history[0]);
-          setResumeHistory(data.history);
+          }),
+
+          fetch("http://localhost:5050/api/job-match/history", {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }),
+        ]);
+
+        const resumeData = await resumeResponse.json();
+        const jobMatchData = await jobMatchResponse.json();
+
+        if (resumeResponse.ok && resumeData.history?.length > 0) {
+          setLatestAnalysis(resumeData.history[0]);
+          setResumeHistory(resumeData.history);
+        }
+
+        if (jobMatchResponse.ok && jobMatchData.history?.length > 0) {
+          setLatestJobMatch(jobMatchData.history[0]);
+          setJobMatchHistory(jobMatchData.history);
         }
       } catch (error) {
-        console.error("Failed to fetch resume analysis history:", error);
+        console.error("Failed to fetch dashboard history:", error);
       } finally {
         setCheckingAuth(false);
       }
     });
+
     return () => unsubscribe();
   }, [router]);
 
@@ -60,6 +83,31 @@ export default function Dashboard() {
   }
 
   const userName = user?.displayName || user?.email?.split("@")[0] || "there";
+  const recentActivity = [
+    ...resumeHistory.map((item) => ({
+      id: `resume-${item.id}`,
+      type: "resume" as const,
+      title: "Resume analyzed",
+      description: item.fileName || "Resume",
+      score: item.atsScore,
+      createdAt: item.createdAt,
+    })),
+
+    ...jobMatchHistory.map((item) => ({
+      id: `job-${item.id}`,
+      type: "job" as const,
+      title: "Job match analyzed",
+      description: "Job Description Match",
+      score: item.atsScore,
+      createdAt: item.createdAt,
+    })),
+  ]
+    .sort(
+      (a, b) =>
+        new Date(b.createdAt || 0).getTime() -
+        new Date(a.createdAt || 0).getTime(),
+    )
+    .slice(0, 5);
 
   return (
     <main className="min-h-screen bg-[#f8f9fc] text-slate-900">
@@ -127,7 +175,18 @@ export default function Dashboard() {
                   Job Match Score
                 </p>
 
-                <p className="mt-4 text-3xl font-bold text-slate-900">—</p>
+                <p className="mt-4 text-3xl font-bold text-slate-900">
+                  {latestJobMatch ? (
+                    <>
+                      {latestJobMatch.atsScore}
+                      <span className="text-base font-medium text-slate-400">
+                        /100
+                      </span>
+                    </>
+                  ) : (
+                    "—"
+                  )}
+                </p>
               </div>
 
               <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-xl">
@@ -270,44 +329,56 @@ export default function Dashboard() {
                 </p>
               </div>
 
-              {resumeHistory.length > 0 && (
-                <button className="text-sm font-medium text-indigo-600 transition hover:text-indigo-700 cursor-pointer">
+              {recentActivity.length > 0 && (
+                <button className="cursor-pointer text-sm font-medium text-indigo-600 transition hover:text-indigo-700">
                   View all activity →
                 </button>
               )}
             </div>
 
-            {resumeHistory.length > 0 ? (
+            {recentActivity.length > 0 ? (
               <div className="mt-6 divide-y divide-slate-100">
-                {resumeHistory.slice(0, 5).map((analysis) => (
+                {recentActivity.map((activity) => (
                   <div
-                    key={analysis.id}
+                    key={activity.id}
                     className="flex items-center justify-between py-5 first:pt-0 last:pb-0"
                   >
                     <div className="flex items-center gap-4">
-                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-lg">
-                        📄
+                      <div
+                        className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-lg ${
+                          activity.type === "resume"
+                            ? "bg-indigo-50"
+                            : "bg-emerald-50"
+                        }`}
+                      >
+                        {activity.type === "resume" ? "📄" : "🎯"}
                       </div>
 
                       <div>
                         <p className="font-medium text-slate-900">
-                          Resume analyzed
+                          {activity.title}
                         </p>
 
                         <p className="mt-1 text-sm text-slate-500">
-                          {analysis.fileName || "Resume"}
+                          {activity.description}
                         </p>
                       </div>
                     </div>
 
                     <div className="text-right">
-                      <span className="inline-flex rounded-full bg-emerald-50 px-3 py-1 text-sm font-medium text-emerald-700">
-                        Score {analysis.atsScore}/100
+                      <span
+                        className={`inline-flex rounded-full px-3 py-1 text-sm font-medium ${
+                          activity.type === "resume"
+                            ? "bg-indigo-50 text-indigo-700"
+                            : "bg-emerald-50 text-emerald-700"
+                        }`}
+                      >
+                        Score {activity.score}/100
                       </span>
 
-                      {analysis.createdAt && (
+                      {activity.createdAt && (
                         <p className="mt-2 text-xs text-slate-400">
-                          {new Date(analysis.createdAt).toLocaleDateString(
+                          {new Date(activity.createdAt).toLocaleDateString(
                             "en-IN",
                             {
                               day: "numeric",

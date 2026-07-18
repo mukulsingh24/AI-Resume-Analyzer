@@ -1,4 +1,7 @@
 export interface JobMatchAnalysis {
+  id: number;
+  firebaseUid?: string;
+  jobDescription: string;
   atsScore: number;
   matchedSkills: string[];
   missingSkills: string[];
@@ -6,4 +9,5 @@ export interface JobMatchAnalysis {
   missingKeywords: string[];
   strengths: string[];
   suggestions: string[];
+  createdAt: string;
 }

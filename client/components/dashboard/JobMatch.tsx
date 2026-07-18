@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { JobMatchAnalysis } from "@/types/jobMatchAnalysis";
+import { auth } from "@/app/firebase/firebase";
 interface JobMatchProps {
   resumeText: string;
 }
@@ -11,46 +12,50 @@ export default function JobMatch({ resumeText }: JobMatchProps) {
   const [jobMatchAnalysis, setJobMatchAnalysis] =
     useState<JobMatchAnalysis | null>(null);
   const handleJobMatch = async () => {
-    if (!jobDescription.trim()) {
-      alert("Please enter a job description.");
+  if (!jobDescription.trim()) return;
+
+  try {
+    setLoading(true);
+
+    const user = auth.currentUser;
+
+    if (!user) {
+      console.error("User is not logged in.");
       return;
     }
 
-    if (!resumeText) {
-      alert("Please upload and analyze your resume first.");
-      return;
-    }
+    const token = await user.getIdToken();
 
-    try {
-      setLoading(true);
-
-      const response = await fetch(
-        "http://localhost:5050/api/resume/job-match",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            resumeText: resumeText,
-            jobDescription: jobDescription,
-          }),
+    const response = await fetch(
+      "http://localhost:5050/api/job-match/analyze",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-      );
+        body: JSON.stringify({
+          resumeText,
+          jobDescription,
+        }),
+      },
+    );
 
-      const data = await response.json();
+    const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to analyze job match.");
-      }
-
-      setJobMatchAnalysis(data.analysis);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
+    if (!response.ok) {
+      throw new Error(data.error || data.message || "Job match failed.");
     }
-  };
+
+    console.log("Job Match Result:", data);
+
+    setJobMatchAnalysis(data.analysis);
+  } catch (error) {
+    console.error("Job Match Error:", error);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="mt-8 rounded-xl border border-slate-200 bg-white p-8 shadow-sm">

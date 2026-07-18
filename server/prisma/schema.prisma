@@ -30,3 +30,19 @@ model ResumeAnalysis {
   suggestions     Json
   createdAt       DateTime @default(now())
 }
+
+model JobMatchAnalysis {
+  id               Int      @id @default(autoincrement())
+  firebaseUid      String
+  jobTitle         String?
+  companyName      String?
+  jobDescription   String   @db.Text
+  atsScore         Int
+  matchedSkills    Json
+  missingSkills    Json
+  matchedKeywords  Json
+  missingKeywords  Json
+  strengths        Json
+  suggestions      Json
+  createdAt        DateTime @default(now())
+}
